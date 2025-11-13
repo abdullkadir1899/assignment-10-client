@@ -4,9 +4,9 @@ const Footer = () => {
     return (
 <footer className="footer  sm:footer-horizontal bg-base-300 text-base-content p-10">
   <nav>
-    <h6 className="footer-title">Services</h6>
-    <a className="link link-hover">Branding</a>
-    <a className="link link-hover">Design</a>
+    <h6 className="footer-title">AI Model Manager</h6>
+    <a className="link link-hover" href="https://github.com/abdullkadir1899/assignment-10-server">Server repo</a>
+    <a className="link link-hover" href='https://github.com/abdullkadir1899/assignment-10-client'>GitHub repo</a>
     <a className="link link-hover">Marketing</a>
     <a className="link link-hover">Advertisement</a>
   </nav>

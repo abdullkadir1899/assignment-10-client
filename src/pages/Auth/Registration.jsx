@@ -1,10 +1,10 @@
 import React, { useContext, useState } from 'react';
-import { AuthContext } from '../../context/AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { FaUser, FaUserPlus, FaGoogle, FaLock, FaImage } from 'react-icons/fa'; // Fixed: FaImage
+import { FaUser, FaUserPlus, FaGoogle, FaLock, FaImage } from 'react-icons/fa'; 
+import { AuthContext } from '../../context/AuthContext';
 
-const SERVER_URL = 'https://assignment-10-server-two-beta.vercel.app/';
+const SERVER_URL = 'https://simple-server-smoky.vercel.app';
 
 const Registration = () => {
     const { createUser, updateUserProfile, googleSignIn } = useContext(AuthContext);
@@ -15,7 +15,7 @@ const Registration = () => {
         const userDetails = { name, email, photoURL };
         try {
             const response = await fetch(`${SERVER_URL}/users`, {
-                method: "POST",
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -23,12 +23,12 @@ const Registration = () => {
             });
             const data = await response.json();
             if (data.success) {
-                console.log("user saved to DB successfully", data);
+                console.log("User saved to DB successfully:", data);
             } else {
-                console.warn("user already exists or failed to save to DB: ", data);
+                console.warn("User already exists or failed to save to DB:", data);
             }
         } catch (error) {
-            console.error('error saving user to db:', error);
+            console.error("Error saving user to DB:", error);
         }
     };
 
@@ -40,18 +40,20 @@ const Registration = () => {
         const email = form.email.value;
         const password = form.password.value;
         const confirmPassword = form.confirmPassword.value;
-        const photoURL = form.photoURL.value || '';
+        const photoURL = form.photoURL.value || ''; 
 
         if (password !== confirmPassword) {
-            setRegisterError('Passwords do not match');
+            setRegisterError('Passwords do not match!');
             return;
         }
 
         createUser(email, password)
             .then(result => {
-                return updateUserProfile(name, photoURL);
+                // Profile update (name + photoURL)
+                return updateUserProfile(name, photoURL); 
             })
             .then(() => {
+                // ডেটাবেসে ইউজার সেভ করা
                 return saveUserToDB(name, email, photoURL);
             })
             .then(() => {
@@ -67,11 +69,19 @@ const Registration = () => {
             .catch(error => {
                 console.error("Registration failed:", error);
                 let errorMessage = "Registration failed. Please check your details.";
+                
+
                 if (error.code === 'auth/email-already-in-use') {
                     errorMessage = "Email already in use. Please use a different email.";
                 } else if (error.code === 'auth/weak-password') {
                     errorMessage = "Password is too weak. Please choose a stronger one.";
+                } else if (error.message) {
+                    // Fallback for general firebase messages
+                    errorMessage = error.message.includes('auth/email-already-in-use') ? 
+                        "Email already in use. Please use a different email." : 
+                        errorMessage;
                 }
+
                 Swal.fire({
                     icon: 'error',
                     title: 'Registration Failed!',
@@ -115,7 +125,7 @@ const Registration = () => {
     };
 
     return (
-        <div className="flex justify-center items-center  min-h-screen">
+        <div className="flex justify-center items-center min-h-screen py-10">
             <div className="w-full max-w-md p-8 space-y-6 bg-base-100 shadow-2xl rounded-xl glass-card">
                 <h2 className="text-3xl font-bold text-center text-primary">
                     <FaUserPlus className="inline mr-2" /> Register for AI Model Inventory Manager
@@ -140,6 +150,7 @@ const Registration = () => {
                         <input type="email" placeholder="you@example.com" name="email" className="input w-full input-bordered" required />
                     </div>
 
+                    {/* Photo URL Input Field */}
                     <div className="form-control">
                         <label className="label">
                             <span className="label-text flex items-center gap-2">
@@ -161,7 +172,7 @@ const Registration = () => {
                                 <FaLock /> Password
                             </span>
                         </label>
-                        <input type="password" placeholder="Password"  name="password" className="input  w-full input-bordered" required />
+                        <input type="password" placeholder="Password" name="password" className="input w-full input-bordered" required />
                     </div>
 
                     <div className="form-control">
@@ -173,6 +184,7 @@ const Registration = () => {
                         <input type="password" placeholder="Confirm Password" name="confirmPassword" className="input w-full input-bordered" required /> 
                     </div>
 
+                    {/* Error Alert Box (Improved UI) */}
                     {registerError && (
                         <div role="alert" className="alert alert-error">
                             <svg
@@ -200,7 +212,7 @@ const Registration = () => {
                 <div className="divider">OR</div>
 
                 <div className="form-control">
-                    <button onClick={handleGoogleSignIn} className="btn btn-outline rounded-2xl  w-full btn-info flex items-center gap-2">
+                    <button onClick={handleGoogleSignIn} className="btn btn-outline rounded-2xl w-full btn-info flex items-center gap-2">
                         <FaGoogle /> Sign up with Google
                     </button>
                 </div>
