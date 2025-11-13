@@ -1,8 +1,6 @@
-// src/pages/MyModels/MyModels.jsx
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useEffect } from 'react';
+import { FaPlus, FaTrash } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import { AuthContext } from '../../context/AuthContext';
-import { FaSpinner, FaPlus, FaTrash } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 
 const MyModels = () => {
@@ -16,32 +14,37 @@ const MyModels = () => {
     const fetchMyModels = async () => {
         setLoading(true);
         setError(null);
-        try {
-            const response = await fetch(`${SERVER_URL}/models`);  // সব মডেল fetch করো
-            if (!response.ok) {
-                throw new Error('Failed to fetch models.');
+
+        try{
+            const response = await fetch(`${SERVER_URL}/models`);
+            if(!response.ok){
+                throw new Error('Failed to fetch models');
             }
             const allModels = await response.json();
-            // Filter: শুধু user-এর তৈরি মডেল
             const userModels = allModels.filter(model => model.createdBy === user.email);
-            setMyModels(userModels);
-        } catch (err) {
-            console.error("Fetch Error:", err);
-            setError("Failed to load your models. Please try again.");
-        } finally {
-            setLoading(false);  // এটা জরুরি! সবসময় loading শেষ করবে
+            setMyModels(userModels)
         }
+        catch (err) {  
+            console.error('fETch error', err);
+            setError('failed to load your models. please try again')
+        }
+        finally{
+            setLoading(false)
+        }
+
     };
 
-    useEffect(() => {
-        if (user) {
-            fetchMyModels();
-        } else {
-            setLoading(false);
-        }
-    }, [user]);
 
-    // ফুল ডিলিট লজিক (ModelDetails-এর মতো)
+    useEffect(() => {
+        if(user){
+            fetchMyModels();
+        }
+        else{
+            setLoading(false)
+        }
+    }, [user])
+
+
     const handleDelete = (modelId) => {
         Swal.fire({
             title: 'Are you sure?',
@@ -51,30 +54,35 @@ const MyModels = () => {
             confirmButtonColor: '#d33',
             cancelButtonColor: '#3085d6',
             confirmButtonText: 'Yes, delete it!'
-        }).then(async (result) => {
-            if (result.isConfirmed) {
-                try {
+        })
+        .then(async (result) => {
+            if(result.isConfirmed){
+                try{
                     const response = await fetch(`${SERVER_URL}/models/${modelId}`, {
                         method: 'DELETE',
                     });
-                    if (!response.ok) {
-                        throw new Error('Delete request failed.');
+                    if(!response.ok){
+                        throw new Error('Delete request failed');
                     }
                     const data = await response.json();
-                    if (data.success) {
+                    if(data.success){
                         Swal.fire('Deleted!', 'Your model has been deleted.', 'success');
-                        // List refresh: নতুন করে fetch করো
                         fetchMyModels();
-                    } else {
-                        throw new Error(data.message || 'Deletion failed.');
                     }
-                } catch (error) {
-                    console.error("Delete Error:", error);
-                    Swal.fire('Failed!', error.message, 'error');
+                    else{
+                        throw new Error(data.message || 'Deletion failed')
+                    }
+
+                }
+                catch(error){
+                    console.error('Delete error', error);
+                    Swal.fire('failed', error.message, 'error')
                 }
             }
-        });
-    };
+        })
+        
+    }
+
 
     if (loading) {
         return (
@@ -85,6 +93,7 @@ const MyModels = () => {
         );
     }
 
+
     if (error) {
         return (
             <div className="text-center py-20">
@@ -93,6 +102,8 @@ const MyModels = () => {
             </div>
         );
     }
+
+
 
     return (
         <div className="max-w-4xl mx-auto py-12 px-4">

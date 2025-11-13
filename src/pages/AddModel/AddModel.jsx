@@ -67,8 +67,8 @@ const AddModel = () => {
     }
 
     return (
-        <div>
-            <div>
+        <div className='flex justify-center items-center min-h-screen'>
+            <div className=' border-gray-300 border p-4 rounded-2xl shadow-2xl'>
                 <h2 className="text-4xl font-extrabold text-center text-primary mb-8 flex items-center justify-center gap-3">
                     <FaPlusCircle className='text-secondary'/> Add New AI Model
                 </h2>
