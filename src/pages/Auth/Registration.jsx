@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { FaUserPlus } from 'react-icons/fa';
+import { FaImage, FaUser, FaUserPlus } from 'react-icons/fa';
 
 const SERVER_URL = 'https://assignment-10-server-two-beta.vercel.app/';
 
@@ -126,8 +126,72 @@ const Registration = () => {
 
 
                 <form onSubmit={handleRegistration} className=' space-y-4'>
+                    <div className="form-control">
+                            <label className="label">
+                                <span className="label-text flex items-center gap-2"><FaUser /> Name</span>
+                            </label>
+                        <input type="text" placeholder="Full Name" name="name" className="input input-bordered" required />
+                    </div>
+
+
+
+                    <div className="form-control">
+                        <label className="label">
+                            <span className="label-text flex items-center gap-2"><FaUser /> Email</span>
+                        </label>
+                        <input type="email" placeholder="you@example.com" name="email" className="input input-bordered" required />
+                    </div>
+
+
+                    <div className="form-control">
+                        <label className="label">
+                            <span className="label-text flex items-center gap-2"><FaImage /> Profile Photo URL (Optional)</span>
+                        </label>
+                        <input 
+                            type="url" 
+                            placeholder="https://example.com/your-photo.jpg" 
+                            name="photoURL" 
+                            className="input input-bordered" 
+                        />
+                        <span className="label-text-alt text-xs text-gray-500">Enter a direct image URL for your profile picture.</span>
+                    </div>
+
+                    <div className="form-control">
+                        <label className="label">
+                            <span className="label-text flex items-center gap-2"><FaLock /> Password</span>
+                        </label>
+                        <input type="password" placeholder="Password" name="password" className="input input-bordered" required />
+                    </div>
                     
+
+                    <div className="form-control">
+                        <label className="label">
+                            <span className="label-text flex items-center gap-2"><FaLock /> Confirm Password</span>
+                        </label>
+                        <input type="password" placeholder="Confirm Password" name="confirmPassword" className="input input-bordered" required />
+                    </div>
+
+                    {registerError && <p className="text-error text-sm">{registerError}</p>}
+
+                    <div className="form-control mt-6">
+                        <button type="submit" className="btn btn-primary">Register</button>
+                    </div>
+
                 </form>
+
+                <div className="divider">OR</div>
+
+                <div className="form-control">
+                    <button onClick={handleGoogleSignIn} className="btn btn-outline btn-info flex items-center gap-2">
+                        <FaGoogle /> Sign up with Google
+                    </button>
+                </div>
+
+                <p className="text-center text-sm mt-4">
+                    Already have an account? <Link to="/login" className="link link-primary font-semibold">Login Now</Link>
+                </p>
+
+
             </div>
         </div>
     );
