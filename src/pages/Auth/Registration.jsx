@@ -193,14 +193,14 @@ const Registration = () => {
                     )}
 
                     <div className="form-control mt-6">
-                        <button type="submit" className="btn btn-primary w-full">Register</button>
+                        <button type="submit" className="btn rounded-xl btn-primary w-full">Register</button>
                     </div>
                 </form>
 
                 <div className="divider">OR</div>
 
                 <div className="form-control">
-                    <button onClick={handleGoogleSignIn} className="btn btn-outline  w-full btn-info flex items-center gap-2">
+                    <button onClick={handleGoogleSignIn} className="btn btn-outline rounded-2xl  w-full btn-info flex items-center gap-2">
                         <FaGoogle /> Sign up with Google
                     </button>
                 </div>
