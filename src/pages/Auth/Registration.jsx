@@ -1,9 +1,134 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
+import { AuthContext } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import { FaUserPlus } from 'react-icons/fa';
+
+const SERVER_URL = 'https://assignment-10-server-two-beta.vercel.app/';
 
 const Registration = () => {
+    const { createUser, updateUserProfile, googleSignIn} = useContext(AuthContext)
+    const [registerError, setRegisterError] = useState('');
+    const navigate = useNavigate();
+
+    const saveUserToDB = async (name, EmailAuthCredential, photoURL = '') => {
+        const userDetails = {name, email, photoURL};
+        try{
+            const response = await fetch(`${SERVER_URL}/users`,{
+                method: "POST",
+                headers: {
+                    'Context-Type' : 'application/json',
+                },
+                body: JSON.stringify(userDetails),
+            });
+            const data = await response.json();
+            if(data.success){
+                console.log("user saved to DB successfully", data);
+            }
+            else{
+                console.warn("user alredy exists or failed to save to DB: ", data)
+            }
+        }
+        catch(error){
+            console.error('error saving user to db:', error);
+        }
+    };
+
+
+    const handleRegistration = (e) => {
+        e.preventDefault();
+        setRegisterError('');
+        const form = e.target;
+        const name = form.name.value;
+        const email = form.email.value;
+        const password = form.password.value;
+        const confirmPassword = form.confirmPassword.value;
+        const photoURL = form.photoURL.value || '';
+
+
+        if(password !== confirmPassword){
+            setRegisterError('passwords do not match')
+            return
+        }
+
+        createUser(email, password)
+        .then(result => {
+            return updateUserProfile(name, photoURL);
+        })
+        .then(() => {
+            return saveUserToDB(name, email, photoURL);
+        }) 
+        .then(() => {
+            Swal.fire({
+            icon: 'success',
+            title: 'Registration Successful!',
+            text: `Welcome, ${name}! You are now registered.`,
+            showConfirmButton: false,
+            timer: 2000
+        });
+        navigate('/')
+        })
+        .catch(error => {
+            console.error("Registration failed:", error.message);
+            const errorMessage = error.message.includes('auth/email-already-in-use')
+                ? "Email already in use. Please use a different email."
+                : "Registration failed. Please check your details.";
+            Swal.fire({
+                icon: 'error',
+                title: 'Registration Failed!',
+                text: errorMessage,
+                confirmButtonColor: '#d33'
+            });
+            setRegisterError(errorMessage);
+        });
+    };
+
+
+
+    const handleGoogleSignIn = () => {
+        googleSignIn()
+        .then(result => {
+            const user = result.user;
+            return saveUserToDB(user.displayName, user.email, user.photoURL || '')
+            .then(() => user)
+        })
+        .then(user => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Google Registration Successful!',
+                text: `Welcome, ${user.displayName}!`,
+                showConfirmButton: false,
+                timer: 2000
+            });
+            navigate('/');
+        })
+                    .catch(error => {
+            console.error("Google Sign-in failed:", error.message);
+            Swal.fire({
+                icon: 'error',
+                title: 'Google Sign-in Failed!',
+                text: 'Could not register with Google.',
+                confirmButtonColor: '#d33'
+            });
+        });
+    }
+
+
+
+
+
     return (
-        <div>
-            
+        <div className="flex justify-center items-center py-10">
+            <div className="w-full max-w-md p-8 space-y-6 bg-base-100 shadow-2xl rounded-xl glass-card">
+                <h2 className="text-3xl font-bold text-center text-primary">
+                    <FaUserPlus className="inline mr-2" /> Register for AI Model Inventory Manager
+                </h2>
+
+
+                <form onSubmit={handleRegistration} className=' space-y-4'>
+                    
+                </form>
+            </div>
         </div>
     );
 };

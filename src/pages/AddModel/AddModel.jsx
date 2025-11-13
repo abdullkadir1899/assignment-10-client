@@ -3,13 +3,13 @@ import { AuthContext } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { FaCode, FaDatabase, FaImage, FaInfoCircle, FaPlusCircle, FaTag } from 'react-icons/fa';
+const SERVER_URL = 'https://assignment-10-server-two-beta.vercel.app/';
 
 const AddModel = () => {
     const {user} = useContext(AuthContext);
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false)
 
-    const SERVER_URL = 'https://assignment-10-server-two-beta.vercel.app/';
 
     const handleSubmit = async (e) => {
         e.preventDefault();
