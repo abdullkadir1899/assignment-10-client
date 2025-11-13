@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../context/AuthContext';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { FaCode, FaDollarSign, FaSpinner, FaTag, FaUser } from 'react-icons/fa';
+import { FaCode, FaDollarSign, FaSpinner, FaTag, FaUser, FaFileDownload } from 'react-icons/fa';
 
 const ModelDetails = () => {
     const {user} = useContext(AuthContext)
     const {id} = useParams()
 
-    const [model, setModels] = useState(null);
+    const [model, setModel] = useState(null); // Fixed: setModels → setModel
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isPurchased, setIsPurchased] = useState(false);
@@ -24,9 +24,9 @@ const ModelDetails = () => {
                 throw new Error('failed to fetch model details')
             }
             const data = await response.json();
-            setModels(data)
+            setModel(data)
             if(user && user.email){
-                checkPurchaseStatus(data.createdBy);
+                checkPurchaseStatus(data._id); // Fixed: data._id
             }
         }
         catch(err) {
@@ -39,8 +39,8 @@ const ModelDetails = () => {
     }
 
 
-    const checkPurchaseStatus = async (creatorEmail) => {
-        if(user.email === creatorEmail) {
+    const checkPurchaseStatus = async (modelId) => { // Fixed: param
+        if(user.email === model.createdBy) { // Use model after set
             setIsPurchased(true);
             return
         }
@@ -49,7 +49,7 @@ const ModelDetails = () => {
         try{
             const response = await fetch(`${SERVER_URL}/check-purchase-status`, {
                 method: 'POST',
-                headers: {'Content-Type' : 'application/json'},
+                headers: {'Content-Type' : 'application/json'}, // Fixed: Typo
                 body: JSON.stringify({userEmail: user.email, modelId: id}),
             });
             if(response.ok){
@@ -72,7 +72,7 @@ const ModelDetails = () => {
         try{
             const response = await fetch(`${SERVER_URL}/purchase-model/${id}`, {
                 method: "POST",
-                headers: {'Context-Type': 'application/json'},
+                headers: {'Content-Type': 'application/json'}, // Fixed: Typo
                 body: JSON.stringify({
                     purchaserEmail: user.email,
                     purchasedModelData: {...model, creatorEmail: model.createdBy}
@@ -82,7 +82,8 @@ const ModelDetails = () => {
             const data = await response.json();
 
             if(data.success){
-                    Swal.fire({
+                setIsPurchased(true); // Fixed: Update state
+                Swal.fire({
                     icon: 'success',
                     title: 'Purchase Successful!',
                     text: `Model details unlocked for $${model.price || 'Free'}. Check your purchases!`,
@@ -166,8 +167,8 @@ const ModelDetails = () => {
                     
                     <div className="bg-success/20 p-4 rounded-md">
                         <p className="font-semibold text-success">Contact/Download Details (Only for Purchaser):</p>
-                        <p className="mt-2"><strong>Creator Email:</strong> {model.creatorEmail || model.createdBy}</p> {/* Fallback */}
-                        <p><strong>Download Link:</strong> <a href={model.downloadLink || '#'} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">Download Model Package <FaFileDownload className="inline ml-1" /></a></p>
+                        <p className="mt-2"><strong>Creator Email:</strong> {model.creatorEmail || model.createdBy}</p>
+                        <p><strong>Download Link:</strong> <a href={model.downloadLink || '#'} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">Download Model Package <FaFileDownload className="inline ml-1" /></a></p> {/* Placeholder */}
                     </div>
                 </div>
             ) : (

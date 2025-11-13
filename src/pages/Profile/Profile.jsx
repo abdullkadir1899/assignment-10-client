@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import Swal from 'sweetalert2';
-import { FaEdit, FaEnvelope, FaImage, FaSave, FaSpinner, FaUserCircle } from 'react-icons/fa';
+import { FaEdit, FaEnvelope, FaImage, FaSave, FaSpinner, FaUserCircle } from 'react-icons/fa'; // Fixed: FaImages → FaImage
 
 const Profile = () => {
     const {user, updateUserProfile, loading: authLoading} = useContext(AuthContext)
@@ -117,7 +117,7 @@ const Profile = () => {
                     </div>
 
                     <div className="form-control">
-                        <label className="label"><span className="label-text flex items-center gap-2"><FaImages /> Photo URL</span></label>
+                        <label className="label"><span className="label-text flex items-center gap-2"><FaImage /> Photo URL</span></label>
                         <input 
                             type="url" 
                             placeholder="Paste your image URL" 

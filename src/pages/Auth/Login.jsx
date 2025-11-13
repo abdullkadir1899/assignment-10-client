@@ -104,7 +104,6 @@ const Login = () => {
                     Login to Your Account
                 </h2>
 
-
                 <div className="divider text-sm text-gray-500">OR USE EMAIL</div>
 
                 <form onSubmit={handleLogin} className='space-y-4'>
@@ -171,8 +170,8 @@ const Login = () => {
                     <div>
                         <button className='btn btn-primary w-full rounded-2xl' type='submit'>Login</button>
                     </div>
+                </form>
 
-                    
                 {/* Google Sign In */}
                 <div className="mb-6">
                     <button onClick={handleGoogleSignIn} className="btn rounded-2xl btn-outline w-full btn-info">
@@ -180,13 +179,12 @@ const Login = () => {
                     </button>
                 </div>
 
-                    <p className="text-center mt-6">
-                        Don't have an account?{' '}
-                        <Link to="/register" className="link link-secondary font-bold">
-                            Register here
-                        </Link>
-                    </p>
-                </form>
+                <p className="text-center mt-6">
+                    Don't have an account?{' '}
+                    <Link to="/register" className="link link-secondary font-bold">
+                        Register here
+                    </Link>
+                </p>
             </div>
         </div>
     );

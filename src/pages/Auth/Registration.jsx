@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { FaImage, FaUser, FaUserPlus, FaGoogle, FaLock } from 'react-icons/fa';
+import { FaUser, FaUserPlus, FaGoogle, FaLock, FaImage } from 'react-icons/fa'; // Fixed: FaImage
 
 const SERVER_URL = 'https://assignment-10-server-two-beta.vercel.app/';
 

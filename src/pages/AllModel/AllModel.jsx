@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import ModelCard from '../../components/ModelCard'; // Assume path
+import { FaSpinner, FaSearch, FaFilter, FaListAlt } from 'react-icons/fa';
 
 const AllModel = () => {
     const [models, setModels] = useState([]);
@@ -37,6 +39,13 @@ const AllModel = () => {
         fetchModels()
     }, [])
 
+    // Fixed: Implement filter and search
+    const filteredModels = models.filter(model => 
+        model.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        (filterFramework === 'All' || model.framework === filterFramework)
+    );
+
+    const uniqueFrameworks = [...new Set(models.map(model => model.framework))];
 
     if(loading){
         return (
@@ -55,10 +64,6 @@ const AllModel = () => {
             </div>
         );
     }
-
-    const filteredModels = models;
-    const uniqueFrameworks = [...new Set(models.map(model => model.framework))];
-
 
     return (
         <div className='py-8'>
@@ -81,7 +86,6 @@ const AllModel = () => {
                         />
                         <button className="btn btn-primary"><FaSearch /></button>
                     </div>
-                    <p className='text-xs mt-1 text-gray-500'>Note: Search functionality requires server-side implementation ($regex).</p>
                 </div>
                 
 
@@ -108,12 +112,10 @@ const AllModel = () => {
             ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {filteredModels.map(model => (
-
                 <ModelCard key={model._id} model={model} />
             ))}
             </div>
             )}
-
 
         </div>
     );

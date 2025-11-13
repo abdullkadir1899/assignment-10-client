@@ -2,8 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { fetchModule } from 'vite';
-import { FaEdit } from 'react-icons/fa';
+import { FaEdit, FaCode, FaTag, FaDatabase, FaImage, FaInfoCircle, FaDollarSign } from 'react-icons/fa';
 
 const UpdateModel = () => {
     const {user} = useContext(AuthContext);
@@ -53,9 +52,11 @@ const UpdateModel = () => {
             name: form.name.value,
             framework: form.framework.value,
             useCase: form.useCase.value,
-            dateset: form.dateset.value,
+            dataset: form.dataset.value, // Fixed: dateset → dataset
+            price: parseFloat(form.price.value) || 0, // Fixed: Added price
             description: form.description.value,
             image: form.image.value,
+            createdBy: modelData.createdBy, // Fixed: Added for server check
         };
 
         try{
@@ -74,6 +75,7 @@ const UpdateModel = () => {
                     showConfirmButton: false,
                     timer: 2500
                 });
+                navigate('/my-models'); // Added: Navigate after success
             }
             else{
                 throw new Error(data.message || 'failed to update model')
@@ -136,10 +138,15 @@ const UpdateModel = () => {
                         </div>
                     </div>
 
-
-                    <div className="form-control">
-                        <label className="label"><span className="label-text font-semibold flex items-center gap-1"><FaImage/> Image (ImgBB URL) *</span></label>
-                        <input type="url" defaultValue={modelData.image} name="image" className="input input-bordered w-full" required />
+                    <div className="grid md:grid-cols-2 gap-6">
+                        <div className="form-control">
+                            <label className="label"><span className="label-text font-semibold flex items-center gap-1"><FaDollarSign /> Price ($)</span></label>
+                            <input type="number" step="0.01" defaultValue={modelData.price || 0} name="price" className="input input-bordered w-full" />
+                        </div>
+                        <div className="form-control">
+                            <label className="label"><span className="label-text font-semibold flex items-center gap-1"><FaImage/> Image (ImgBB URL) *</span></label>
+                            <input type="url" defaultValue={modelData.image} name="image" className="input input-bordered w-full" required />
+                        </div>
                     </div>
 
 

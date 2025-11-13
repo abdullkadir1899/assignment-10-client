@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
-import { FaPlus, FaTrash } from 'react-icons/fa';
+import React, { useContext, useEffect, useState } from 'react'; // Fixed: useContext added
+import { AuthContext } from '../../context/AuthContext'; // Fixed: Import
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { FaPlus, FaTrash, FaSpinner } from 'react-icons/fa';
 
 const MyModels = () => {
-    const { user } = useContext(AuthContext);
+    const { user } = useContext(AuthContext); // Fixed
     const [myModels, setMyModels] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -16,13 +17,12 @@ const MyModels = () => {
         setError(null);
 
         try{
-            const response = await fetch(`${SERVER_URL}/models`);
+            const response = await fetch(`${SERVER_URL}/my-models/${user.email}`); // Fixed: Use server endpoint
             if(!response.ok){
                 throw new Error('Failed to fetch models');
             }
-            const allModels = await response.json();
-            const userModels = allModels.filter(model => model.createdBy === user.email);
-            setMyModels(userModels)
+            const data = await response.json();
+            setMyModels(data)
         }
         catch (err) {  
             console.error('fETch error', err);
@@ -60,6 +60,8 @@ const MyModels = () => {
                 try{
                     const response = await fetch(`${SERVER_URL}/models/${modelId}`, {
                         method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' }, // Fixed: Added
+                        body: JSON.stringify({ createdBy: user.email }) // Fixed: Send body
                     });
                     if(!response.ok){
                         throw new Error('Delete request failed');

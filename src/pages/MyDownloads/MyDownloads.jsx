@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom'; // Fixed: useParams not used, but Link yes
 import { AuthContext } from '../../context/AuthContext';
-import { FaListAlt, FaShoppingCart } from 'react-icons/fa';
+import { FaListAlt, FaShoppingCart, FaSpinner } from 'react-icons/fa';
 
 const MyDownloads = () => {
     const { user, loading: authLoading } = useContext(AuthContext);
@@ -9,13 +9,28 @@ const MyDownloads = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-
     const SERVER_URL = 'https://assignment-10-server-two-beta.vercel.app/'
 
     useEffect(() => {
-        if(authLoading) return;
-        setLoading(false);
-        setPurchasedModels([])
+        if (authLoading) return;
+        if (user) {
+            fetch(`${SERVER_URL}/my-purchases/${user.email}`)
+                .then(res => {
+                    if (!res.ok) throw new Error('Failed to fetch purchases');
+                    return res.json();
+                })
+                .then(data => {
+                    setPurchasedModels(data);
+                    setLoading(false);
+                })
+                .catch(err => {
+                    setError(err.message);
+                    setLoading(false);
+                });
+        } else {
+            setLoading(false);
+            setPurchasedModels([]);
+        }
     }, [user, authLoading]);
 
     if (authLoading || loading) {
@@ -26,7 +41,6 @@ const MyDownloads = () => {
             </div>
         );
     }
-
 
     if (error) {
         return (
@@ -52,7 +66,7 @@ const MyDownloads = () => {
             {purchasedModels.length === 0 ? (
                 <div className="text-center py-20 p-8 bg-base-100 rounded-xl shadow-lg glass-card max-w-lg mx-auto">
                     <h2 className="text-3xl font-bold text-primary">No Models Purchased Yet</h2>
-                    <p className="mt-4 text-lg">You haven't purchased any model details yet. (Coming soon!)</p>
+                    <p className="mt-4 text-lg">You haven't purchased any model details yet.</p>
                     <Link to="/models" className="btn btn-primary mt-6">
                         <FaListAlt /> Explore All Models
                     </Link>
@@ -72,6 +86,17 @@ const MyDownloads = () => {
                             </tr>
                         </thead>
                         <tbody>
+                            {purchasedModels.map((purchase, index) => (
+                                <tr key={purchase._id}>
+                                    <td>{index + 1}</td>
+                                    <td>{purchase.purchasedModelData.name}</td>
+                                    <td>{purchase.purchasedModelData.framework}</td>
+                                    <td>{purchase.purchasedModelData.useCase}</td>
+                                    <td>{purchase.purchasedModelData.creatorEmail}</td>
+                                    <td>{new Date(purchase.purchasedAt).toLocaleDateString()}</td>
+                                    <td><Link to={`/models/${purchase.originalModelId}`} className="btn btn-sm btn-primary">View Details</Link></td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </div>

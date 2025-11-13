@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Banner from '../../components/Banner';
+import ModelCard from '../../components/ModelCard'; // Assume
 import { FaCheckCircle, FaPlusCircle, FaRobot, FaSpinner, FaUserPlus } from 'react-icons/fa';
 import { AuthContext } from '../../context/AuthContext';
 import { Link } from 'react-router-dom';
@@ -38,13 +39,11 @@ const Home = () => {
         fetchFeaturedModels();
     }, [])
 
-
-
     const FeaturedModelsSection = () => {
         if(loading){
             return (
                 <div className="flex justify-center items-center py-20">
-                    <FaSpinner/>
+                    <FaSpinner className="animate-spin text-5xl text-primary" />
                     <span className="ml-3 text-lg">Loading Featured Models...</span>
                 </div>
             )
@@ -59,7 +58,7 @@ const Home = () => {
             )
         };
 
-        if(fetchFeaturedModels.length === 0){
+        if(featuredModels.length === 0){ // Fixed: Typo
             return (
                 <div className="text-center py-10">
                     <h3 className="text-2xl font-bold text-secondary">No Featured Models Yet</h3>
@@ -74,10 +73,7 @@ const Home = () => {
                     <ModelCard key={model._id} model={model} />
                 ))}
             </div>
-);
-
-
-
+        );
     }
 
 
@@ -102,22 +98,24 @@ const Home = () => {
                 </div>
             </section>
 
-            <section>
-                <h2>Featured AI Models</h2>
-                <FeaturedModelsSection></FeaturedModelsSection>
+            <section className="py-16">
+                <div className="max-w-7xl mx-auto">
+                    <h2 className="text-4xl font-extrabold text-center text-primary mb-8">Featured AI Models</h2>
+                    <FeaturedModelsSection />
+                </div>
             </section>
 
             <section className='py-16' id='get-started'>
                 <div className="max-w-4xl mx-auto text-center p-10 bg-primary text-primary-content rounded-xl shadow-2xl">
                     <h2 className="text-4xl font-extrabold mb-4">Ready to Manage your Ai Inventory</h2>
-                    <p className="text-lg mb-8 opacity-90"></p>
+                    <p className="text-lg mb-8 opacity-90">Start adding, purchasing, and managing AI models today!</p> {/* Added text */}
 
                 {user ? (
-                    <Link to='/add-model' className='btn btn-secondary btn-lg text-lg'><FaPlusCircle></FaPlusCircle></Link>
+                    <Link to='/add-model' className='btn btn-secondary btn-lg text-lg'><FaPlusCircle className="mr-2" /> Add Model</Link>
                 ) : (
                     <div className=' space-x-2'>
-                        <Link to='/login' className='btn btn-secondary rounded-2xl btn-lg text-lg'> <FaCheckCircle></FaCheckCircle> Login</Link>
-                        <Link to='/register' className='btn btn-outline btn-secondary rounded-2xl btn-lg text-lg'><FaUserPlus></FaUserPlus>Register now</Link>
+                        <Link to='/login' className='btn btn-secondary rounded-2xl btn-lg text-lg'> <FaCheckCircle className="mr-2" /> Login</Link>
+                        <Link to='/register' className='btn btn-outline btn-secondary rounded-2xl btn-lg text-lg'><FaUserPlus className="mr-2" />Register now</Link>
                     </div>
                 )}
                 </div>

@@ -38,8 +38,6 @@ const Checkout = () => {
         fetchModel();
     }, [id, navigate])
 
-
-
     const handlePurchase = async () => {
         if(!user){
             Swal.fire('Login Required!', 'Please log in to purchase.', 'warning');
@@ -61,7 +59,7 @@ const Checkout = () => {
 
             const data = await response.json();
             if(data.success){
-                                Swal.fire({
+                Swal.fire({
                     icon: 'success',
                     title: 'Purchase Successful!',
                     text: `Paid $${model.price || 'Free'}. Details unlocked!`,
@@ -88,8 +86,6 @@ const Checkout = () => {
         }
     };
 
-
-    
     if (loading) {
         return (
             <div className="flex justify-center items-center h-[80vh]">
