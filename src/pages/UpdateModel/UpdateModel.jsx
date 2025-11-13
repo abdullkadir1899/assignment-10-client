@@ -3,6 +3,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { fetchModule } from 'vite';
+import { FaEdit } from 'react-icons/fa';
 
 const UpdateModel = () => {
     const {user} = useContext(AuthContext);
@@ -98,8 +99,69 @@ const UpdateModel = () => {
     }
 
     return (
-        <div>
-            
+        <div className='py-10'>
+            <div className="max-w-4xl mx-auto p-8 bg-base-100 shadow-2xl rounded-xl glass-card">
+                <h2 className="text-4xl font-extrabold text-center text-primary mb-8 flex items-center justify-center gap-3">
+                    <FaEdit className='text-secondary'/> Update AI Model
+                </h2>
+
+
+                <p className="text-center text-gray-500 mb-6">
+                    Update the details of your existing AI model.
+                </p>    
+
+
+
+                <form onSubmit={handleSubmit} className=' space-y-6'>
+                    <div className="grid md:grid-cols-2 gap-6">
+                        <div className="form-control">
+                            <label className="label"><span className="label-text font-semibold">Model Name *</span></label>
+                            <input type="text" defaultValue={modelData.name} name="name" className="input input-bordered w-full" required />
+                        </div>
+                        <div className="form-control">
+                            <label className="label"><span className="label-text font-semibold flex items-center gap-1"><FaCode/> Framework *</span></label>
+                            <input type="text" defaultValue={modelData.framework} name="framework" className="input input-bordered w-full" required />
+                        </div>
+                    </div>
+
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                        <div className="form-control">
+                            <label className="label"><span className="label-text font-semibold flex items-center gap-1"><FaTag/> Use Case *</span></label>
+                            <input type="text" defaultValue={modelData.useCase} name="useCase" className="input input-bordered w-full" required />
+                        </div>
+                        <div className="form-control">
+                            <label className="label"><span className="label-text font-semibold flex items-center gap-1"><FaDatabase/> Dataset Used *</span></label>
+                            <input type="text" defaultValue={modelData.dataset} name="dataset" className="input input-bordered w-full" required />
+                        </div>
+                    </div>
+
+
+                    <div className="form-control">
+                        <label className="label"><span className="label-text font-semibold flex items-center gap-1"><FaImage/> Image (ImgBB URL) *</span></label>
+                        <input type="url" defaultValue={modelData.image} name="image" className="input input-bordered w-full" required />
+                    </div>
+
+
+                    <div className="form-control">
+                        <label className="label"><span className="label-text font-semibold flex items-center gap-1"><FaInfoCircle/> Description *</span></label>
+                        <textarea defaultValue={modelData.description} name="description" className="textarea textarea-bordered h-24 w-full" required></textarea>
+                    </div>
+
+
+                    <div className="form-control pt-4">
+                        <button type="submit" className="btn btn-primary w-full rounded-2xl btn-lg" disabled={loading}>
+                            {loading ? (
+                                <span className="loading loading-spinner"></span>
+                            ) : (
+                                "Update Model"
+                            )}
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
         </div>
     );
 };
