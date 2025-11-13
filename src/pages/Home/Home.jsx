@@ -104,7 +104,7 @@ const Home = () => {
 
             <section>
                 <h2>Featured AI Models</h2>
-                {/* set item */}
+                <FeaturedModelsSection></FeaturedModelsSection>
             </section>
 
             <section className='py-16' id='get-started'>
@@ -115,9 +115,9 @@ const Home = () => {
                 {user ? (
                     <Link to='/add-model' className='btn btn-secondary btn-lg text-lg'><FaPlusCircle></FaPlusCircle></Link>
                 ) : (
-                    <div>
-                        <Link to='/login' className='btn btn-secondary btn-lg text-lg'> <FaCheckCircle></FaCheckCircle> Login</Link>
-                        <Link to='/register' className='btn btn-outline btn-secondary btn-lg text-lg'><FaUserPlus></FaUserPlus>Register now</Link>
+                    <div className=' space-x-2'>
+                        <Link to='/login' className='btn btn-secondary rounded-2xl btn-lg text-lg'> <FaCheckCircle></FaCheckCircle> Login</Link>
+                        <Link to='/register' className='btn btn-outline btn-secondary rounded-2xl btn-lg text-lg'><FaUserPlus></FaUserPlus>Register now</Link>
                     </div>
                 )}
                 </div>
